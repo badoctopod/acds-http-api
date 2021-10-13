@@ -1,0 +1,187 @@
+{;; Конфигурация пула соединений JDBC с экземпляром БД pite
+ ;; DBTYPE   - тип БД (oracle)
+ ;; DBNAME   - SID БД (pite)
+ ;; USERNAME - имя пользователя/схемы
+ ;; PASSWORD - пароль пользователя/схемы
+ ;; HOST     - IP-адрес экземпляра БД
+ ;; PORT     - порт экземпляра БД
+ ;; poolName - название пула соединений (для идентификации записей в журнале)
+ :pite      {:dbtype   "oracle"
+             :dbname   "CHANGEME"
+             :username "CHANGEME"
+             :password "CHANGEME"
+             :host     "CHANGEME"
+             :port     1521
+             :poolName "[PITE]"}
+
+ ;; Параметры запуска web-сервера
+ ;; IP     - сетевой адрес сервера
+ ;; PORT   - порт сервера
+ ;; THREAD - количество потоков
+ :http      {:ip     "localhost"
+             :port   8001
+             :thread 4}
+
+ ;; Прочие параметры web-сервера
+ ;; STOP-TIMEOUT - время ожидания перед остановкой web-сервера, мс
+ :http-misc {:stop-timeout 100}
+
+ ;; Параметры журналирования
+ ;; PATTERN           - шаблон вывода временной метки (см. в javadoc)
+ ;; TIMEZONE          - временная зона
+ ;; PATH              - путь до файла журнала
+ ;; BACKLOG           - количество хранимых файлов журнала
+ ;; FILESIZE          - максимальный размер файла журнала перед ротацией, байт
+ ;; LEVEL             - уровень журналирования (:debug, :warn, :error, :info)
+ :log       {:pattern   "dd-MM-yyyy HH:mm:ss"
+             :timezone  "Europe/Moscow"
+             :path      "logs/app.log"
+             :backlog   5
+             :file-size 10485760
+             :level     :debug}
+
+ ;; Описание версии экземпляра приложения 
+ :api-instance {:version "v2.0.0"
+                :instance "development"}
+
+ ;; Параметры swagger-схемы
+ ;; VERSION, HOST, basePath, URL - указывать всегда "", значения подставляются автоматически
+ :api-description {:swagger {:info {:title "ИС \"Карьер\".HTTP API: интеграционный интерфейс"
+                                    :description "Программный интерфейс информационной системы \"Карьер\" предприятия, предназначенный для интеграции с другими системами ЕИС по протоколу HTTP."
+                                    :version ""}
+                             :host ""
+                             :basePath ""
+                             :externalDocs {:description "Сопроводительная документация"
+                                            :url ""}}
+                   :mining-results {:summary "Производственные показатели для дашборда акционерной стоимости (ДАС)"
+                                    :description "Запрос возвращает расчет производственных показателей по справочнику статей ДАС: KGK.A.010000 \"Горная масса\", KGK.A.020000 \"Добыча руды\", KGK.A.030000 \"Вскрыша\", KGK.B.010000 \"Дробление руды\". Методика расчета представлена в сопроводительной документации."}
+                   :conveyors-hourly-rates {:summary "Почасовые показатели весов конвейеров"
+                                            :description "Запрос возвращает расход т/ч по каждому конвейеру, дискретность - час."}}
+
+ ;; Параметры ресурсов API
+ :params    {;; Ресурс "Конвейеры"
+             :conveyors {;; Почасовые показатели весов конвейеров
+                         :hourly-rates {;; Метки ковейеров
+                                        :conveyor-tags ["01DF.CV07.WT01"
+                                                        "01DF.CV15.WT01"
+                                                        "02US.CV01.WT01"
+                                                        "02US.CV04.WT01"
+                                                        "03ASHR.CV0231.WT01"
+                                                        "03ASHR.CV031.WT01"
+                                                        "04SUSH.CV60.WT01"
+                                                        "04SUSH.CV62.WT01"
+                                                        "04SUSH.CV66.WT01"
+                                                        "05ABOF.CV04.WT01"
+                                                        "05ABOF.CV05a.WT01"
+                                                        "05ABOF.CV05.WT01"]}}
+             ;; Ресурс "Отчеты"
+             :reports {;; Производственные показатели по добыче и грузоперевозкам руды и вскрыши за сутки
+                       :mining-results {;; Базовые индикаторы
+                                        ;; INDICATOR - название базового индикатора
+                                        ;; WORKTYPES - коды видов работ, входящие в расчет базового индиктора
+                                        :base-indicators [{:indicator "amo-from-deposit"
+                                                           :worktypes #{"РДО" "РДСУ" "КАШР" "КАШФ" "ЗБР" "МАРВНБР"}}
+                                                          {:indicator "aso-from-deposit"
+                                                           :worktypes #{"ДАШ" "ДАШФ"}}
+                                                          {:indicator "amo-from-dump"
+                                                           :worktypes #{"МЖР4С" "МЖР4Б"}}
+                                                          {:indicator "aso-from-dump"
+                                                           :worktypes #{"ДАШСОС" "ДАШСОФ"}}
+                                                          {:indicator "am-overburden"
+                                                           :worktypes #{"ВСК" "ВНД" "ДСУ" "ВСД" "СЗР" "ВИП" "ВВО1" "ИПДСУ" "ВДСК"}}
+                                                          {:indicator "as-overburden"
+                                                           :worktypes #{"АШРКВ" "АШРКВД" "АРМО" "АРМД"}}]
+
+                                        ;; Шаблон расчета индикаторов
+                                        ;; INDICATOR   - название индикатора (англ)
+                                        ;; LOCATION    - название места добычи
+                                        ;; BASE        - база для расчета (список базовых индикаторов)
+                                        ;; DESCRIPTION - название индикатора (рус)
+                                        ;; UOM         - единица измерения
+                                        ;; ROW-CODE    - код строки в ДАС
+                                        :report-indicators [{:indicator "mined-rock-by-deposits"
+                                                             :location "magnetite-apatite"
+                                                             :base ["amo-from-deposit"
+                                                                    "am-overburden"
+                                                                    "amo-from-dump"]
+                                                             :description "Карьер апатит-магнетитовой руды (МАР)"
+                                                             :uom "тыс. м3"
+                                                             :row-code "KGK.A.011000"}
+                                                            {:indicator "mined-rock-by-deposits"
+                                                             :location "apatite-staffelite"
+                                                             :base ["aso-from-deposit"
+                                                                    "as-overburden"
+                                                                    "aso-from-dump"]
+                                                             :description "Карьер апатит-штаффелитовой руды (АШР)"
+                                                             :uom "тыс. м3"
+                                                             :row-code "KGK.A.012000"}
+                                                            {:indicator "mined-ore-by-deposits"
+                                                             :location "magnetite-apatite"
+                                                             :base ["amo-from-deposit"]
+                                                             :description "Добыча АМ руды"
+                                                             :uom "тыс. тн"
+                                                             :row-code "KGK.A.021000"}
+                                                            {:indicator "mined-ore-by-deposits"
+                                                             :location "apatite-staffelite"
+                                                             :base ["aso-from-deposit"]
+                                                             :description "Добыча АШ руды"
+                                                             :uom "тыс. тн"
+                                                             :row-code "KGK.A.024000"}
+                                                            {:indicator "mined-ore-by-dumps"
+                                                             :location "low-iron-dump"
+                                                             :base ["amo-from-dump"]
+                                                             :description "Добыча АМ руды со спецотвалов МЖАР"
+                                                             :uom "тыс. тн"
+                                                             :row-code "KGK.A.022000"}
+                                                            {:indicator "overburden-by-deposits"
+                                                             :location "magnetite-apatite"
+                                                             :base ["am-overburden"]
+                                                             :description "В контуре карьера МАР"
+                                                             :uom "тыс. м3"
+                                                             :row-code "KGK.A.031000"}
+                                                            {:indicator "overburden-by-deposits"
+                                                             :location "apatite-staffelite"
+                                                             :base ["as-overburden"]
+                                                             :description "В контуре карьера АШР"
+                                                             :uom "тыс. м3"
+                                                             :row-code "KGK.A.032000"}]}
+                       ;; Производственные показатели по дроблению руды за сутки
+                       :ore-crushing-results {;; Метки ковейеров
+                                              :conveyor-tags ["01DF.CV07.WT01"
+                                                              "01DF.CV15.WT01"
+                                                              "02US.CV01.WT01"
+                                                              "02US.CV04.WT01"
+                                                              "03ASHR.CV0231.WT01"
+                                                              "03ASHR.CV031.WT01"
+                                                              "04SUSH.CV60.WT01"
+                                                              "04SUSH.CV62.WT01"
+                                                              "04SUSH.CV66.WT01"
+                                                              "05ABOF.CV04.WT01"
+                                                              "05ABOF.CV05a.WT01"
+                                                              "05ABOF.CV05.WT01"]
+                                              ;; Шаблон расчета индикаторов
+                                              ;; INDICATOR   - название индикатора (англ)
+                                              ;; BASE        - база для расчета (список метьок конвейеров)
+                                              ;; DESCRIPTION - название индикатора (рус)
+                                              ;; UOM         - единица измерения
+                                              ;; ROW-CODE    - код строки в ДАС
+                                              :report-indicators [{:indicator "amo-crushing-conveyor-7"
+                                                                   :base ["01DF.CV07.WT01"]
+                                                                   :description "Дробление АМ руды (Конвейер №7)"
+                                                                   :uom "тыс. тн"
+                                                                   :row-code "KGK.B.011000"}
+                                                                  {:indicator "conveyor-us-1"
+                                                                   :base ["02US.CV01.WT01"]
+                                                                   :description "Конвейер УС-1"
+                                                                   :uom "тыс. тн"
+                                                                   :row-code "KGK.B.020000"}
+                                                                  {:indicator "conveyor-us-4"
+                                                                   :base ["02US.CV04.WT01"]
+                                                                   :description "Конвейер УС-4"
+                                                                   :uom "тыс. тн"
+                                                                   :row-code "KGK.B.030000"}
+                                                                  {:indicator "conveyor-15"
+                                                                   :base ["01DF.CV15.WT01"]
+                                                                   :description "Конвейер №-15"
+                                                                   :uom "тыс. тн"
+                                                                   :row-code "KGK.B.040000"}]}}}}
