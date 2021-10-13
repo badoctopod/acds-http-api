@@ -48,7 +48,7 @@
  :api-description {:swagger {:info {:title "ИС \"Карьер\".HTTP API: интеграционный интерфейс"
                                     :description "Программный интерфейс информационной системы \"Карьер\" предприятия, предназначенный для интеграции с другими системами ЕИС по протоколу HTTP."
                                     :version ""}
-                             :host "https://acds-http-api.herokuapp.com"
+                             :host "acds-http-api.herokuapp.com"
                              :basePath ""
                              :externalDocs {:description "Сопроводительная документация"
                                             :url "https://acds-http-api.herokuapp.com/docs"}}

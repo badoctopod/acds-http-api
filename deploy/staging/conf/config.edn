@@ -49,7 +49,7 @@
  :api-description {:swagger {:info {:title "ИС \"Карьер\".HTTP API: интеграционный интерфейс"
                                     :description "Программный интерфейс информационной системы \"Карьер\" предприятия, предназначенный для интеграции с другими системами ЕИС по протоколу HTTP."
                                     :version ""}
-                             :host "http://CHANGEME:8001"
+                             :host "CHANGEME:8001"
                              :basePath ""
                              :externalDocs {:description "Сопроводительная документация"
                                             :url "http://CHANGEME:8001"}}
