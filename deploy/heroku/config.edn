@@ -18,7 +18,7 @@
  ;; IP     - сетевой адрес сервера
  ;; PORT   - порт сервера
  ;; THREAD - количество потоков
- :http      {:ip     "acds-http-api.herokuapp.com"
+ :http      {:ip     "0.0.0.0"
              :port   8001
              :thread 4}
 
@@ -44,15 +44,14 @@
  :api-instance {:version "v2.0.0"
                 :instance "staging"}
 
- ;; Параметры swagger-схемы
- ;; VERSION, HOST, basePath, URL - указывать всегда "", значения подставляются автоматически
+ ;; VERSION - указывать всегда "", значение подставляется автоматически
  :api-description {:swagger {:info {:title "ИС \"Карьер\".HTTP API: интеграционный интерфейс"
                                     :description "Программный интерфейс информационной системы \"Карьер\" предприятия, предназначенный для интеграции с другими системами ЕИС по протоколу HTTP."
                                     :version ""}
-                             :host ""
+                             :host "https://acds-http-api.herokuapp.com"
                              :basePath ""
                              :externalDocs {:description "Сопроводительная документация"
-                                            :url ""}}
+                                            :url "https://acds-http-api.herokuapp.com/docs"}}
                    :mining-results {:summary "Производственные показатели для дашборда акционерной стоимости (ДАС)"
                                     :description "Запрос возвращает расчет производственных показателей по справочнику статей ДАС: KGK.A.010000 \"Горная масса\", KGK.A.020000 \"Добыча руды\", KGK.A.030000 \"Вскрыша\", KGK.B.010000 \"Дробление руды\". Методика расчета представлена в сопроводительной документации."}
                    :conveyors-hourly-rates {:summary "Почасовые показатели весов конвейеров"

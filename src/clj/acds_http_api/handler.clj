@@ -159,17 +159,11 @@
     [["/swagger.json"
       {:get {:no-doc true
              :swagger (let [swagger (get-in config [:api-description :swagger])
-                            host (str (get-in config [:http :ip])
-                                      ":"
-                                      (get-in config [:http :port]))
-                            docs-url (str "http://" host "/docs")
                             version (str (get-in config [:api-instance :instance])
                                          ":"
                                          (get-in config [:api-instance :version]))]
                         (-> swagger
-                            (update :host (constantly host))
                             (update :basePath (constantly ""))
-                            (update-in [:externalDocs :url] (constantly docs-url))
                             (update-in [:info :version] (constantly version))))
              :handler (swagger/create-swagger-handler)}}]
      ["/public/*"
