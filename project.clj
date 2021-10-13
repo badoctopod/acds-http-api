@@ -20,6 +20,8 @@
 
   :repositories [["XWiki External Repository" "https://maven.xwiki.org/externals/"]]
 
+  :pedantic? false
+
   :jvm-opts ["-Xmx2g"
              "-server"
              "-Dconf=config.edn"
@@ -28,7 +30,7 @@
   :global-vars {*warn-on-reflection* true}
 
   :plugins [[lein-ancient "0.6.15"]
-            [lein-kibit "0.1.8"]]
+            [lein-kibit "0.1.8" :exclusions [org.clojure/clojure]]]
 
   :min-lein-version "2.8.1"
 
